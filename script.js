@@ -1,4 +1,4 @@
-// ==================== script.js (FIXED: OVR default 65, random 65-70) ====================
+// ==================== script.js (FIXED: OVR 65 WITH PROPER ATTRIBUTES) ====================
 document.addEventListener('DOMContentLoaded', () => {
     const clubLogoDatabase = {
         'Arsenal': 'https://upload.wikimedia.org/wikipedia/en/thumb/5/53/Arsenal_FC.svg/1200px-Arsenal_FC.svg.png',
@@ -96,6 +96,39 @@ document.addEventListener('DOMContentLoaded', () => {
         if (ovrBar) ovrBar.style.width = (baseOVR / 99 * 100) + '%';
     });
 
+    // --- Generate attributes based on position and OVR ---
+    function generateAttributes(position, ovr) {
+        const pos = position.toUpperCase();
+        // Base attributes around OVR value
+        const base = ovr - 15;
+        
+        // Position-specific adjustments
+        const adjustments = {
+            'ST': { acceleration: 8, sprintSpeed: 6, stamina: 4, finishing: 12, passing: 2, dribbling: 6, ballControl: 6, composure: 8, strength: 6, vision: 2, doubleTouch: 4, agility: 6 },
+            'CF': { acceleration: 6, sprintSpeed: 5, stamina: 4, finishing: 10, passing: 4, dribbling: 8, ballControl: 8, composure: 8, strength: 4, vision: 4, doubleTouch: 6, agility: 6 },
+            'LW': { acceleration: 10, sprintSpeed: 10, stamina: 6, finishing: 6, passing: 6, dribbling: 10, ballControl: 8, composure: 4, strength: 2, vision: 4, doubleTouch: 8, agility: 10 },
+            'RW': { acceleration: 10, sprintSpeed: 10, stamina: 6, finishing: 6, passing: 6, dribbling: 10, ballControl: 8, composure: 4, strength: 2, vision: 4, doubleTouch: 8, agility: 10 },
+            'CAM': { acceleration: 6, sprintSpeed: 4, stamina: 6, finishing: 6, passing: 12, dribbling: 8, ballControl: 10, composure: 6, strength: 2, vision: 12, doubleTouch: 6, agility: 6 },
+            'CM': { acceleration: 4, sprintSpeed: 4, stamina: 8, finishing: 4, passing: 10, dribbling: 6, ballControl: 8, composure: 6, strength: 4, vision: 8, doubleTouch: 4, agility: 4 },
+            'CDM': { acceleration: 2, sprintSpeed: 2, stamina: 10, finishing: 2, passing: 8, dribbling: 4, ballControl: 6, composure: 6, strength: 10, vision: 6, doubleTouch: 2, agility: 2 },
+            'LB': { acceleration: 8, sprintSpeed: 8, stamina: 8, finishing: 2, passing: 6, dribbling: 4, ballControl: 6, composure: 6, strength: 6, vision: 4, doubleTouch: 2, agility: 6 },
+            'RB': { acceleration: 8, sprintSpeed: 8, stamina: 8, finishing: 2, passing: 6, dribbling: 4, ballControl: 6, composure: 6, strength: 6, vision: 4, doubleTouch: 2, agility: 6 },
+            'CB': { acceleration: 2, sprintSpeed: 2, stamina: 6, finishing: 2, passing: 4, dribbling: 2, ballControl: 4, composure: 8, strength: 12, vision: 2, doubleTouch: 0, agility: 2 },
+            'GK': { acceleration: 2, sprintSpeed: 2, stamina: 4, finishing: 0, passing: 6, dribbling: 2, ballControl: 6, composure: 10, strength: 6, vision: 4, doubleTouch: 0, agility: 4 }
+        };
+
+        const adj = adjustments[pos] || { acceleration: 4, sprintSpeed: 4, stamina: 4, finishing: 4, passing: 4, dribbling: 4, ballControl: 4, composure: 4, strength: 4, vision: 4, doubleTouch: 2, agility: 4 };
+
+        const attrs = {};
+        const keys = ['acceleration', 'sprintSpeed', 'stamina', 'finishing', 'passing', 'dribbling', 'ballControl', 'composure', 'strength', 'vision', 'doubleTouch', 'agility'];
+        keys.forEach(key => {
+            let val = base + (adj[key] || 4) + Math.floor(Math.random() * 4) - 2;
+            attrs[key] = Math.max(30, Math.min(99, Math.round(val)));
+        });
+
+        return attrs;
+    }
+
     if (playerForm) {
         playerForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -111,6 +144,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // OVR defaults to 65 if not set or invalid
             let ovr = parseInt(ovrValue?.textContent);
             if (isNaN(ovr) || ovr < 40) ovr = 65;
+
+            // Generate attributes based on position and OVR
+            const attributes = generateAttributes(playerPos, ovr);
 
             const playerData = {
                 name: playerName,
@@ -134,16 +170,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 fatigue: 0,
                 reputation: 0,
                 leagueData: {},
-                attributes: {
-                    acceleration: 48, sprintSpeed: 50, stamina: 45, finishing: 42,
-                    passing: 44, dribbling: 46, ballControl: 44, composure: 40,
-                    strength: 42, vision: 38, doubleTouch: 36
-                },
+                attributes: attributes,
                 faceImage: localStorage.getItem('theJourney_playerFace') || '',
                 careerTimeline: [],
                 mediaMentions: [],
                 sponsors: [],
-                pendingOffers: []
+                pendingOffers: [],
+                ownedBoots: [],
+                equippedBoots: null
             };
 
             localStorage.setItem('theJourney_playerData', JSON.stringify(playerData));
