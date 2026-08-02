@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>THE JOURNEY · Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ============================================================
+           FC26 STYLE DASHBOARD - MOBILE FIRST
+           Green & Black Theme - No Emoji
+           ============================================================ */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-card: #111827;
+            --bg-card-hover: #1a2438;
+            --bg-input: #1a2236;
+            --bg-tertiary: #0f1729;
+            --border-subtle: rgba(46, 204, 113, 0.12);
+            --border-default: rgba(46, 204, 113, 0.25);
+            --green-primary: #2ecc71;
+            --green-bright: #00e676;
+            --green-dark: #1a8a4a;
+            --green-glow: rgba(46, 204, 113, 0.15);
+            --text-primary: #f0f4fa;
+            --text-secondary: #b0b8c8;
+            --text-muted: #6a728a;
+            --text-dim: #4a526a;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-pill: 40px;
+            --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 40px rgba(46, 204, 113, 0.06);
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            letter-spacing: 0.2px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- SCROLLBAR --- */
+        ::-webkit-scrollbar { width: 3px; height: 3px; }
+        ::-webkit-scrollbar-track { background: var(--bg-tertiary); }
+        ::-webkit-scrollbar-thumb { background: var(--green-primary); border-radius: 10px; }
+
+        /* --- APP WRAPPER --- */
+        .dash-app {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 10px 12px 30px;
+            background: var(--bg-primary);
+            min-height: 100vh;
+        }
+
+        /* --- TOP HEADER --- */
+        .dash-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0 12px;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 14px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-icon {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--green-primary), var(--green-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: #0a0e1a;
+            box-shadow: 0 0 24px rgba(46, 204, 113, 0.25);
+        }
+
+        .brand-text {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-primary);
+        }
+        .brand-text span { color: var(--green-primary); }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .season-badge {
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid rgba(46, 204, 113, 0.2);
+            border-radius: var(--radius-pill);
+            padding: 3px 12px;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--green-primary);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .header-icon {
+            color: var(--text-muted);
+            font-size: 16px;
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        /* --- PLAYER PROFILE CARD --- */
+        .profile-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--green-primary), transparent);
+        }
+
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--bg-input);
+            border: 2px solid var(--green-primary);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .profile-avatar i {
+            font-size: 24px;
+            color: var(--text-muted);
+        }
+
+        .profile-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .profile-name {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 0.3px;
+        }
+
+        .profile-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 12px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .profile-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .profile-meta i {
+            color: var(--green-primary);
+            font-size: 10px;
+            width: 14px;
+        }
+
+        .profile-ovr-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .ovr-badge {
+            background: rgba(46, 204, 113, 0.12);
+            border: 1px solid rgba(46, 204, 113, 0.25);
+            border-radius: var(--radius-pill);
+            padding: 0 12px;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--green-primary);
+            font-family: 'Inter', monospace;
+            line-height: 26px;
+        }
+
+        .lvl-badge {
+            font-size: 10px;
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.04);
+            padding: 0 10px;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(255,255,255,0.06);
+            line-height: 22px;
+        }
+
+        .xp-wrap {
+            flex: 1;
+            min-width: 50px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .xp-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .xp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--green-dark), var(--green-primary));
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.6s ease;
+        }
+        .xp-text {
+            font-size: 9px;
+            color: var(--text-muted);
+            font-weight: 600;
+            white-space: nowrap;
+            font-family: 'Inter', monospace;
+        }
+
+        /* --- NAV TABS --- */
+        .nav-tabs {
+            display: flex;
+            overflow-x: auto;
+            gap: 4px;
+            padding: 4px 0 12px;
+            margin-bottom: 4px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        .nav-tabs::-webkit-scrollbar { display: none; }
+
+        .nav-tab {
+            flex: 0 0 auto;
+            padding: 5px 14px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: var(--radius-pill);
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            transition: all 0.2s;
+            white-space: nowrap;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .nav-tab.active {
+            background: rgba(46, 204, 113, 0.12);
+            border-color: var(--green-primary);
+            color: var(--green-primary);
+        }
+        .nav-tab i {
+            margin-right: 4px;
+            font-size: 10px;
+        }
+        .nav-tab:hover {
+            border-color: rgba(46, 204, 113, 0.3);
+        }
+
+        /* --- DASH CARDS --- */
+        .dash-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-card);
+            transition: border-color 0.25s;
+        }
+        .dash-card:hover {
+            border-color: rgba(46, 204, 113, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .card-title i {
+            color: var(--green-primary);
+            font-size: 12px;
+        }
+
+        .card-action {
+            font-size: 10px;
+            color: var(--green-primary);
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .card-action:hover { opacity: 1; }
+
+        /* --- STATUS GRID --- */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+        .status-item {
+            text-align: center;
+            padding: 4px 0;
+        }
+        .status-item .label {
+            font-size: 8px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.8px;
+        }
+        .status-item .value {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 1px;
+            font-family: 'Inter', monospace;
+        }
+        .status-item .value.green { color: var(--green-primary); }
+        .status-item .value.gold { color: #f1c40f; }
+        .status-item .value.blue { color: #3498db; }
+        .status-item .value.red { color: #e74c3c; }
+
+        .status-bar-wrap {
+            margin-top: 3px;
+            height: 3px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .status-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: var(--green-primary);
+            transition: width 0.6s ease;
+        }
+
+        /* --- ATTRIBUTE HIGHLIGHTS --- */
+        .attr-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .attr-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .attr-label {
+            width: 32px;
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            font-family: 'Inter', monospace;
+        }
+        .attr-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .attr-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--green-dark), var(--green-primary));
+            width: 0%;
+            transition: width 0.8s ease;
+        }
+        .attr-val {
+            width: 28px;
+            text-align: right;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: 'Inter', monospace;
+            color: var(--text-primary);
+        }
+        .attr-val.trend-up { color: var(--green-primary); }
+        .attr-val.trend-down { color: #e74c3c; }
+        .attr-val.trend-stable { color: var(--text-muted); }
+
+        /* --- FINANCE ROW --- */
+        .finance-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            font-size: 12px;
+        }
+        .finance-row:last-child { border-bottom: none; }
+        .finance-label {
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+        .finance-value {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: 'Inter', monospace;
+            font-size: 12px;
+        }
+        .finance-value.green { color: var(--green-primary); }
+        .finance-value.gold { color: #f1c40f; }
+        .finance-value.red { color: #e74c3c; }
+
+        .transfer-mini {
+            background: rgba(46, 204, 113, 0.04);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            margin-top: 6px;
+            border-left: 2px solid var(--green-primary);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .transfer-mini .highlight {
+            color: var(--green-primary);
+            font-weight: 700;
+        }
+        .transfer-trend {
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .trend-up { color: var(--green-primary); }
+        .trend-down { color: #e74c3c; }
+        .trend-stable { color: #f1c40f; }
+
+        /* --- OBJECTIVES --- */
+        .obj-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .obj-item:last-child { border-bottom: none; }
+        .obj-status {
+            font-size: 12px;
+            color: var(--green-primary);
+            width: 18px;
+            text-align: center;
+        }
+        .obj-text {
+            font-size: 11px;
+            color: var(--text-secondary);
+            flex: 1;
+        }
+        .obj-text strong {
+            color: var(--text-primary);
+        }
+        .obj-progress {
+            width: 60px;
+            height: 4px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .obj-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--green-dark), var(--green-primary));
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.6s ease;
+        }
+
+        /* --- GRID 2 COL --- */
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .mini-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 12px 10px;
+            text-align: center;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: var(--text-secondary);
+            box-shadow: var(--shadow-card);
+        }
+        .mini-card:hover {
+            border-color: rgba(46, 204, 113, 0.2);
+        }
+        .mini-card .icon {
+            font-size: 18px;
+            margin-bottom: 4px;
+            display: block;
+        }
+        .mini-card .icon i {
+            font-size: 20px;
+        }
+        .mini-card .label {
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--text-muted);
+        }
+        .mini-card .value {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 1px;
+        }
+        .mini-card .sub {
+            font-size: 9px;
+            color: var(--text-muted);
+        }
+
+        /* Icon Colors */
+        .icon-sponsor { color: #f1c40f; }
+        .icon-equipment { color: #3498db; }
+        .icon-world { color: #9b59b6; }
+        .icon-career { color: #e67e22; }
+        .icon-calendar { color: #2ecc71; }
+        .icon-news { color: #e74c3c; }
+        .icon-trophy { color: #f1c40f; }
+        .icon-chemistry { color: #2ecc71; }
+
+        /* --- CALENDAR & NEWS --- */
+        .cal-item, .news-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .cal-item:last-child, .news-item:last-child { border-bottom: none; }
+        .cal-date {
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 10px;
+        }
+        .cal-event {
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+        .news-item i {
+            color: var(--green-primary);
+            font-size: 8px;
+            margin-right: 6px;
+        }
+
+        /* --- TOP SCORERS --- */
+        .scorer-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+            font-size: 11px;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+        }
+        .scorer-row:last-child { border-bottom: none; }
+        .scorer-name {
+            color: var(--text-secondary);
+        }
+        .scorer-goals {
+            font-weight: 700;
+            color: var(--green-primary);
+            font-family: 'Inter', monospace;
+        }
+
+        /* --- CHEMISTRY --- */
+        .chemistry-badge {
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid rgba(46, 204, 113, 0.15);
+            border-radius: var(--radius-pill);
+            padding: 2px 14px;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--green-primary);
+            display: inline-block;
+            font-family: 'Inter', monospace;
+        }
+        .chem-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-left: 6px;
+        }
+
+        /* --- INJURY STATUS --- */
+        .injury-status {
+            background: rgba(46, 204, 113, 0.04);
+            border: 1px solid rgba(46, 204, 113, 0.1);
+            border-radius: var(--radius-sm);
+            padding: 6px 12px;
+            font-size: 11px;
+            color: var(--green-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .injury-status.injured {
+            background: rgba(231, 76, 60, 0.08);
+            border-color: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+        .injury-status i {
+            font-size: 12px;
+        }
+
+        /* --- TOAST --- */
+        #toastContainer {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 280px;
+        }
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            box-shadow: var(--shadow-card);
+            animation: slideIn 0.3s ease;
+        }
+        .toast-success { border-color: var(--green-primary); color: var(--green-primary); }
+        .toast-warning { border-color: #f1c40f; color: #f1c40f; }
+        .toast-error { border-color: #e74c3c; color: #e74c3c; }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 400px) {
+            .dash-app { padding: 6px 8px 20px; }
+            .profile-card { padding: 10px 12px; }
+            .profile-name { font-size: 15px; }
+            .profile-avatar { width: 50px; height: 50px; }
+            .status-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; }
+            .status-item .value { font-size: 13px; }
+            .grid-2col { gap: 6px; }
+            .mini-card { padding: 8px 6px; }
+            .mini-card .icon { font-size: 15px; }
+            .mini-card .icon i { font-size: 17px; }
+            .dash-card { padding: 10px 12px; }
+            .nav-tab { font-size: 9px; padding: 4px 10px; }
+            .ovr-badge { font-size: 14px; padding: 0 10px; }
+        }
+
+        @media (min-width: 481px) {
+            .dash-app { padding: 16px 20px 40px; }
+        }
+
+        /* --- FOOTER --- */
+        .dash-footer {
+            text-align: center;
+            padding: 16px 0 4px;
+            font-size: 9px;
+            color: var(--text-dim);
+            letter-spacing: 0.5px;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 8px;
+        }
+        .dash-footer span {
+            color: var(--green-primary);
+        }
+
+        /* --- TREND INDICATOR ON ATTR --- */
+        .trend-indicator {
+            font-size: 8px;
+            margin-left: 2px;
+        }
+
+        /* --- CAREER QUICK LINK --- */
+        .career-quick-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(46, 204, 113, 0.04);
+            border: 1px solid rgba(46, 204, 113, 0.1);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            margin-top: 6px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .career-quick-link:hover {
+            background: rgba(46, 204, 113, 0.08);
+            border-color: rgba(46, 204, 113, 0.2);
+        }
+        .career-quick-link .left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+        .career-quick-link .left i {
+            color: var(--green-primary);
+            font-size: 14px;
+        }
+        .career-quick-link .right {
+            color: var(--green-primary);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* --- SEASON STATS BAR --- */
+        .season-stats-mini {
+            display: flex;
+            justify-content: space-around;
+            padding: 4px 0;
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+        .season-stats-mini span {
+            text-align: center;
+        }
+        .season-stats-mini .num {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: 'Inter', monospace;
+        }
+        .season-stats-mini .num.green { color: var(--green-primary); }
+        .season-stats-mini .num.gold { color: #f1c40f; }
+    </style>
+</head>
+<body>
+
+<div class="dash-app" id="app">
+
+    <!-- ===== HEADER ===== -->
+    <header class="dash-header">
+        <div class="brand">
+            <div class="brand-icon">J</div>
+            <div class="brand-text">The <span>Journey</span></div>
+        </div>
+        <div class="header-right">
+            <span class="season-badge" id="seasonDisplay">S1</span>
+            <i class="fas fa-bell header-icon"></i>
+        </div>
+    </header>
+
+    <!-- ===== PLAYER PROFILE ===== -->
+    <div class="profile-card">
+        <div class="profile-avatar" id="dashFaceContainer">
+            <i class="fas fa-user"></i>
+        </div>
+        <div class="profile-info">
+            <div class="profile-name" id="dashPlayerName">—</div>
+            <div class="profile-meta">
+                <span><i class="fas fa-futbol"></i> <span id="dashPosition">—</span></span>
+                <span><i class="fas fa-calendar-alt"></i> <span id="dashAge">—</span></span>
+                <span><i class="fas fa-flag"></i> <span id="dashNationality">—</span></span>
+                <span><i class="fas fa-shield-alt"></i> <span id="dashClub">—</span></span>
+            </div>
+            <div class="profile-ovr-row">
+                <span class="ovr-badge" id="dashOVR">60</span>
+                <span class="lvl-badge" id="playerLevel">LVL 1</span>
+                <div class="xp-wrap">
+                    <div class="xp-bar"><div class="xp-fill" id="xpBarFill" style="width:0%;"></div></div>
+                    <span class="xp-text" id="xpDisplay">0/1000</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== NAV TABS ===== -->
+    <nav class="nav-tabs" id="globalNav">
+        <a href="#" class="nav-tab active"><i class="fas fa-home"></i> Home</a>
+        <a href="career.html" class="nav-tab"><i class="fas fa-calendar-check"></i> Next Match</a>
+        <a href="training.html" class="nav-tab"><i class="fas fa-dumbbell"></i> Training</a>
+        <a href="#" class="nav-tab"><i class="fas fa-chart-simple"></i> Status</a>
+        <a href="#" class="nav-tab"><i class="fas fa-chart-bar"></i> Attributes</a>
+        <a href="financial.html" class="nav-tab"><i class="fas fa-coins"></i> Finances</a>
+        <a href="transfer.html" class="nav-tab"><i class="fas fa-arrows-left-right"></i> Transfers</a>
+        <a href="livingmedia.html" class="nav-tab"><i class="fas fa-newspaper"></i> Media</a>
+        <a href="sponsor.html" class="nav-tab"><i class="fas fa-handshake"></i> Sponsors</a>
+        <a href="equipment.html" class="nav-tab"><i class="fas fa-shoe-prints"></i> Equipment</a>
+        <a href="roleplay.html" class="nav-tab"><i class="fas fa-globe"></i> Open World</a>
+        <a href="career.html" class="nav-tab"><i class="fas fa-road"></i> Career</a>
+    </nav>
+
+    <!-- ===== PLAYER STATUS ===== -->
+    <div class="dash-card">
+        <div class="card-header">
+            <span class="card-title"><i class="fas fa-heart-pulse"></i> Player Status</span>
+            <span style="font-size:10px; color:var(--text-muted);" id="formLabel">Form: <span id="formDisplay" style="color:var(--green-primary);">Excellent</span></span>
+        </div>
+        <div class="status-grid">
+            <div class="status-item">
+                <div class="label">Morale</div>
+                <div class="value green" id="moraleValueDisplay">—</div>
+                <div class="status-bar-wrap"><div class="status-bar-fill" id="moraleBar" style="width:0%;"></div></div>
+            </div>
+            <div class="status-item">
+                <div class="label">Sharpness</div>
+                <div class="value blue" id="sharpnessValue">—</div>
+                <div class="status-bar-wrap"><div class="status-bar-fill" id="staminaBar" style="width:0%; background:#3498db;"></div></div>
+            </div>
+            <div class="status-item">
+                <div class="label">Fatigue</div>
+                <div class="value gold" id="fatigueValue">—</div>
+                <div class="status-bar-wrap"><div class="status-bar-fill" id="fatigueBar" style="width:0%; background:#f1c40f;"></div></div>
+            </div>
+            <div class="status-item">
+                <div class="label">Form</div>
+                <div class="value" id="formValueDisplay" style="color:var(--green-primary);">—</div>
+                <div class="status-bar-wrap"><div class="status-bar-fill" id="formBar" style="width:0%; background:var(--green-primary);"></div></div>
+            </div>
+        </div>
+        <div id="injuryStatusDisplay" class="injury-status" style="display:none;">
+            <i class="fas fa-circle-check"></i> <span>Status: Fit</span>
+        </div>
+    </div>
+
+    <!-- ===== SEASON STATS MINI ===== -->
+    <div class="dash-card">
+        <div class="card-header">
+            <span class="card-title"><i class="fas fa-chart-simple"></i> Season Stats</span>
+        </div>
+        <div class="season-stats-mini">
+            <span><span class="num" id="ssApps">0</span>Apps</span>
+            <span><span class="num green" id="ssGoals">0</span>Goals</span>
+            <span><span class="num gold" id="ssAssists">0</span>Assists</span>
+            <span><span class="num" id="ssRating">0.0</span>Rating</span>
+        </div>
+    </div>
+
+    <!-- ===== ATTRIBUTE HIGHLIGHTS ===== -->
+    <div class="dash-card">
+        <div class="card-header">
+            <span class="card-title"><i class="fas fa-chart-simple"></i> Attribute Highlights</span>
+            <a href="training.html" class="card-action">Improve <i class="fas fa-chevron-right"></i></a>
+        </div>
+        <div class="attr-grid" id="attrSummaryList">
+            <!-- diisi oleh JS -->
+        </div>
+    </div>
+
+    <!-- ===== FINANCE & TRANSFER ===== -->
+    <div class="dash-card">
+        <div class="card-header">
+            <span class="card-title"><i class="fas fa-coins"></i> Finances</span>
+            <a href="financial.html" class="card-action">Details <i class="fas fa-chevron-right"></i></a>
+        </div>
+        <div class="finance-row">
+            <span class="finance-label">Balance</span>
+            <span class="finance-value green" id="dashBalance">—</span>
+        </div>
+        <div class="finance-row">
+            <span class="finance-label">Weekly Salary</span>
+            <span class="finance-value" id="dashSalary">—</span>
+        </div>
+        <div class="finance-row">
+            <span class="finance-label">Market Value</span>
+            <span class="finance-value gold" id="dashMarketVal">—</span>
+        </div>
+        <div class="finance-row">
+            <span class="finance-label">Sponsor Income</span>
+            <span class="finance-value" id="dashSponsorIncome">—</span>
+        </div>
+        <div class="finance-row">
+            <span class="finance-label">Weekly Expenses</span>
+            <span class="finance-value red" id="dashExpenses">—</span>
+        </div>
+        <div class="transfer-mini">
+            <span><i class="fas fa-arrows-left-right" style="color:var(--green-primary); margin-right:6px;"></i> Transfer offers: <span class="highlight" id="dashTransferOffers">0</span></span>
+            <span class="transfer-trend" id="transferTrend"><i class="fas fa-minus trend-stable"></i></span>
+        </div>
+    </div>
+
+    <!-- ===== OBJECTIVES ===== -->
+    <div class="dash-card">
+        <div class="card-header">
+            <span class="card-title"><i class="fas fa-bullseye"></i> Objectives</span>
+        </div>
+        <div id="objectivesContainer">
+            <!-- diisi oleh JS -->
+        </div>
+    </div>
+
+    <!-- ===== CAREER QUICK LINK ===== -->
+    <a href="career.html" class="career-quick-link">
+        <span class="left"><i class="fas fa-road"></i> Go to Career Hub</span>
+        <span class="right"><i class="fas fa-chevron-right"></i></span>
+    </a>
+
+    <!-- ===== SPONSORS · EQUIPMENT · OPEN WORLD · CAREER ===== -->
+    <div class="grid-2col" style="margin-top:10px;">
+        <a href="sponsor.html" class="mini-card">
+            <span class="icon"><i class="fas fa-handshake icon-sponsor"></i></span>
+            <div class="label">Sponsors</div>
+            <div class="value" id="sponsorCount">0</div>
+        </a>
+        <a href="equipment.html" class="mini-card">
+            <span class="icon"><i class="fas fa-shoe-prints icon-equipment"></i></span>
+            <div class="label">Equipment</div>
+            <div class="value" id="equipLabel">—</div>
+        </a>
+        <a href="roleplay.html" class="mini-card">
+            <span class="icon"><i class="fas fa-globe icon-world"></i></span>
+            <div class="label">Open World</div>
+            <div class="value">Explore</div>
+        </a>
+        <a href="career.html" class="mini-card">
+            <span class="icon"><i class="fas fa-road icon-career"></i></span>
+            <div class="label">Career</div>
+            <div class="value" id="careerProgress">S1</div>
+        </a>
+    </div>
+
+    <!-- ===== CALENDAR · NEWS · TOP SCORERS · CHEMISTRY ===== -->
+    <div class="grid-2col">
+        <div class="mini-card" style="text-align:left; background:var(--bg-card); border-color:rgba(46,204,113,0.06);">
+            <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+                <i class="fas fa-calendar-alt icon-calendar"></i>
+                <span class="label" style="font-size:9px;">Calendar</span>
+            </div>
+            <div id="calendarMini">
+                <div class="cal-item"><span class="cal-date">15 JUN</span><span class="cal-event">vs Man City</span></div>
+                <div class="cal-item"><span class="cal-date">22 JUN</span><span class="cal-event">vs Chelsea</span></div>
+                <div class="cal-item"><span class="cal-date">29 JUN</span><span class="cal-event">vs Arsenal</span></div>
+            </div>
+        </div>
+        <div class="mini-card" style="text-align:left; background:var(--bg-card); border-color:rgba(46,204,113,0.06);">
+            <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+                <i class="fas fa-newspaper icon-news"></i>
+                <span class="label" style="font-size:9px;">Newsfeed</span>
+            </div>
+            <div id="mediaFeedMini">
+                <div class="news-item"><i class="fas fa-circle"></i> No media yet</div>
+            </div>
+        </div>
+        <div class="mini-card" style="text-align:left; background:var(--bg-card); border-color:rgba(46,204,113,0.06);">
+            <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+                <i class="fas fa-trophy icon-trophy"></i>
+                <span class="label" style="font-size:9px;">Top Scorers</span>
+            </div>
+            <div id="topScorersMini" class="scorer-list">
+                <div class="scorer-row"><span class="scorer-name">—</span><span class="scorer-goals">0</span></div>
+            </div>
+        </div>
+        <div class="mini-card" style="text-align:left; background:var(--bg-card); border-color:rgba(46,204,113,0.06);">
+            <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+                <i class="fas fa-users icon-chemistry"></i>
+                <span class="label" style="font-size:9px;">Team Chemistry</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <span class="chemistry-badge" id="chemValue">88</span>
+                <span class="chem-label" id="chemLabel">Strong</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="dash-footer">
+        THE JOURNEY <span>&bull;</span> FC26 Simulation <span>&bull;</span> Season <span id="footerSeason">1</span>
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div id="toastContainer"></div>
+
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT — DASHBOARD LOGIC
+     ============================================================ -->
+<script>
+    (function() {
+        'use strict';
+
+        // --- HELPER: GET PLAYER DATA ---
+        function getPlayer() {
+            const data = localStorage.getItem('theJourney_playerData');
+            if (!data) return null;
+            try { return JSON.parse(data); } catch(e) { return null; }
+        }
+
+        const player = getPlayer();
+        if (!player) {
+            window.location.href = 'index.html';
+            return;
+        }
+
+        // --- HELPER: FORMAT VALUE ---
+        function formatValue(value) {
+            if (value >= 1000000) return '€' + (value / 1000000).toFixed(1) + 'M';
+            if (value >= 1000) return '€' + Math.round(value / 1000) + 'K';
+            return '€' + value;
+        }
+
+        // --- FORMAT FINANCE (tanpa euro, guna £) ---
+        function formatFinance(value) {
+            if (value >= 1000000) return '£' + (value / 1000000).toFixed(1) + 'M';
+            if (value >= 1000) return '£' + Math.round(value / 1000) + 'K';
+            return '£' + value;
+        }
+
+        // --- HELPER: GET LEAGUE NAME ---
+        function getLeagueName() {
+            if (player.leagueData) {
+                const keys = Object.keys(player.leagueData);
+                if (keys.length > 0) return keys[0];
+            }
+            return 'Premier League';
+        }
+
+        // --- HELPER: SEASON AVERAGE RATING ---
+        function seasonAverageRating() {
+            const history = player.ratingHistory || [];
+            if (history.length === 0) return 6.0;
+            return history.reduce((a, b) => a + b, 0) / history.length;
+        }
+
+        // --- TREND TRACKING FOR ATTRIBUTES ---
+        function getAttrTrend(key, current) {
+            const prevKey = 'prev_attr_' + key;
+            const prev = parseFloat(sessionStorage.getItem(prevKey) || current);
+            sessionStorage.setItem(prevKey, current);
+            if (current > prev) return 'up';
+            if (current < prev) return 'down';
+            return 'stable';
+        }
+
+        // ================================================================
+        // AUTO WEEKLY INCOME - SAMA DENGAN FINANCIAL.JS
+        // ================================================================
+        function processWeeklyIncome() {
+            const currentWeek = player.currentMatchWeek || 1;
+            const lastPaidWeek = player.lastPaidWeek || 0;
+
+            if (currentWeek > lastPaidWeek) {
+                // Kira pendapatan mingguan
+                const salary = player.salary || 200;
+                const sponsorIncome = (player.sponsors || []).reduce((sum, s) => sum + (s.value || 0), 0);
+                const totalIncome = salary + sponsorIncome;
+
+                // Tambah ke bank balance (gunakan bankBalance)
+                player.bankBalance = (player.bankBalance || 500) + totalIncome;
+
+                // Rekod minggu bayaran
+                player.lastPaidWeek = currentWeek;
+
+                // Simpan perubahan
+                localStorage.setItem('theJourney_playerData', JSON.stringify(player));
+
+                console.log('💰 Week ' + currentWeek + ': Received £' + totalIncome + ' (Salary: £' + salary + ', Sponsors: £' + sponsorIncome + ')');
+            }
+        }
+
+        // --- RENDER DASHBOARD ---
+        function renderDashboard() {
+            // ---- PROCESS WEEKLY INCOME FIRST ----
+            processWeeklyIncome();
+
+            // ---- BASIC INFO ----
+            const nameEl = document.getElementById('dashPlayerName');
+            if (nameEl) nameEl.textContent = player.name || '—';
+
+            const posEl = document.getElementById('dashPosition');
+            if (posEl) posEl.textContent = player.position || '—';
+
+            const ageEl = document.getElementById('dashAge');
+            if (ageEl) ageEl.textContent = 'Age: ' + (player.age || 18);
+
+            const natEl = document.getElementById('dashNationality');
+            if (natEl) natEl.textContent = player.nationality || '—';
+
+            const clubEl = document.getElementById('dashClub');
+            if (clubEl) clubEl.textContent = player.club || '—';
+
+            const ovrEl = document.getElementById('dashOVR');
+            const ovr = Math.round(player.ovr || 60);
+            if (ovrEl) ovrEl.textContent = ovr;
+
+            // ---- LVL & XP ----
+            const level = Math.max(1, Math.floor((ovr - 40) / 5) + 1);
+            const xpProgress = ((ovr - 40) % 5) * 200;
+            const xpMax = 1000;
+            const xpPct = Math.min(100, (xpProgress / xpMax) * 100);
+
+            const lvlEl = document.getElementById('playerLevel');
+            if (lvlEl) lvlEl.textContent = 'LVL ' + level;
+
+            const xpBar = document.getElementById('xpBarFill');
+            if (xpBar) xpBar.style.width = xpPct + '%';
+
+            const xpDisplay = document.getElementById('xpDisplay');
+            if (xpDisplay) xpDisplay.textContent = Math.round(xpProgress) + '/' + xpMax + ' XP';
+
+            // ---- SEASON ----
+            const season = player.season || 1;
+            const seasonEl = document.getElementById('seasonDisplay');
+            if (seasonEl) seasonEl.textContent = 'S' + season;
+
+            const footerSeason = document.getElementById('footerSeason');
+            if (footerSeason) footerSeason.textContent = season;
+
+            // ---- FORM ----
+            const lastMatches = (player.seasonMatchHistory || []).slice(0, 3);
+            const wins = lastMatches.filter(m => m.result === 'W').length;
+            let formText = 'Excellent';
+            let formColor = '#2ecc71';
+            if (wins === 0) { formText = 'Average'; formColor = '#f1c40f'; }
+            if (lastMatches.length > 0 && wins === 0 && lastMatches.some(m => m.result === 'L')) { formText = 'Poor'; formColor = '#e74c3c'; }
+
+            const formDisplay = document.getElementById('formDisplay');
+            if (formDisplay) {
+                formDisplay.textContent = formText;
+                formDisplay.style.color = formColor;
+            }
+
+            // ---- FORM VALUE (for status grid) ----
+            const formValEl = document.getElementById('formValueDisplay');
+            if (formValEl) {
+                const formScore = lastMatches.length > 0 ? (wins / lastMatches.length) * 100 : 50;
+                formValEl.textContent = Math.round(formScore) + '%';
+                formValEl.style.color = formScore >= 60 ? '#2ecc71' : (formScore >= 30 ? '#f1c40f' : '#e74c3c');
+            }
+            const formBar = document.getElementById('formBar');
+            if (formBar) {
+                const formScore = lastMatches.length > 0 ? (wins / lastMatches.length) * 100 : 50;
+                formBar.style.width = formScore + '%';
+            }
+
+            // ---- MORALE ----
+            const morale = player.morale || 70;
+            const moraleVal = document.getElementById('moraleValueDisplay');
+            if (moraleVal) moraleVal.textContent = Math.round(morale) + '%';
+            const moraleBar = document.getElementById('moraleBar');
+            if (moraleBar) moraleBar.style.width = morale + '%';
+
+            // ---- SHARPNESS (stamina) ----
+            const stamina = player.attributes?.stamina || 60;
+            const sharpnessVal = document.getElementById('sharpnessValue');
+            if (sharpnessVal) sharpnessVal.textContent = Math.round(stamina) + '%';
+            const staminaBar = document.getElementById('staminaBar');
+            if (staminaBar) staminaBar.style.width = stamina + '%';
+
+            // ---- FATIGUE ----
+            const fatigue = player.fatigue || 0;
+            const fatigueVal = document.getElementById('fatigueValue');
+            if (fatigueVal) fatigueVal.textContent = Math.round(fatigue) + '%';
+            const fatigueBar = document.getElementById('fatigueBar');
+            if (fatigueBar) fatigueBar.style.width = fatigue + '%';
+
+            // ---- INJURY ----
+            const injuryEl = document.getElementById('injuryStatusDisplay');
+            if (player.injuryStatus && player.injuryStatus !== 'Fit') {
+                injuryEl.style.display = 'flex';
+                injuryEl.className = 'injury-status injured';
+                injuryEl.innerHTML = '<i class="fas fa-triangle-exclamation"></i> Status: <strong>' + player.injuryStatus + '</strong>';
+            } else {
+                injuryEl.style.display = 'flex';
+                injuryEl.className = 'injury-status';
+                injuryEl.innerHTML = '<i class="fas fa-circle-check"></i> Status: <strong>Fit</strong>';
+            }
+
+            // ---- SEASON STATS MINI ----
+            const history = player.seasonMatchHistory || [];
+            const apps = history.length;
+            const goals = history.reduce((a, m) => a + (m.goals || 0), 0);
+            const assists = history.reduce((a, m) => a + (m.assists || 0), 0);
+            const avgRating = apps > 0 ? seasonAverageRating() : 0;
+
+            document.getElementById('ssApps').textContent = apps;
+            document.getElementById('ssGoals').textContent = goals;
+            document.getElementById('ssAssists').textContent = assists;
+            document.getElementById('ssRating').textContent = avgRating.toFixed(1);
+
+            // ---- ATTRIBUTES ----
+            const abilities = player.abilities || {};
+            const attrKeys = ['pace', 'shooting', 'passing', 'dribbling', 'defending', 'physical'];
+            const attrLabels = { pace: 'PAC', shooting: 'SHO', passing: 'PAS', dribbling: 'DRI', defending: 'DEF', physical: 'PHY' };
+            const attrContainer = document.getElementById('attrSummaryList');
+            if (attrContainer) {
+                let html = '';
+                attrKeys.forEach(k => {
+                    const val = Math.round(abilities[k] || 60);
+                    const trend = getAttrTrend(k, val);
+                    let trendClass = 'trend-stable';
+                    let trendIcon = 'fas fa-minus';
+                    if (trend === 'up') { trendClass = 'trend-up'; trendIcon = 'fas fa-arrow-up'; }
+                    if (trend === 'down') { trendClass = 'trend-down'; trendIcon = 'fas fa-arrow-down'; }
+
+                    html += `
+                        <div class="attr-row">
+                            <span class="attr-label">${attrLabels[k]}</span>
+                            <div class="attr-bar"><div class="attr-fill" style="width:${val}%;"></div></div>
+                            <span class="attr-val ${trendClass}">${val} <i class="${trendIcon} trend-indicator"></i></span>
+                        </div>
+                    `;
+                });
+                attrContainer.innerHTML = html;
+            }
+
+            // ---- FINANCES ----
+            // GUNA bankBalance dari localStorage (sama dengan financial.js)
+            const bankBalance = player.bankBalance || 500;
+            const salary = player.salary || 200;
+            const marketVal = player.marketValue || 1000000;
+            const sponsorIncome = (player.sponsors || []).reduce((sum, s) => sum + (s.value || 0), 0);
+            const weeklyExpenses = Math.round(salary * 0.375) + Math.round(salary * 0.05) + Math.round(salary * 0.2) + 15;
+
+            const balanceEl = document.getElementById('dashBalance');
+            if (balanceEl) balanceEl.textContent = formatFinance(bankBalance);
+
+            const salaryEl = document.getElementById('dashSalary');
+            if (salaryEl) salaryEl.textContent = formatFinance(salary) + '/wk';
+
+            const marketEl = document.getElementById('dashMarketVal');
+            if (marketEl) marketEl.textContent = formatFinance(marketVal);
+
+            const sponsorEl = document.getElementById('dashSponsorIncome');
+            if (sponsorEl) sponsorEl.textContent = formatFinance(sponsorIncome) + '/wk';
+
+            const expensesEl = document.getElementById('dashExpenses');
+            if (expensesEl) expensesEl.textContent = formatFinance(weeklyExpenses) + '/wk';
+
+            // ---- TRANSFER OFFERS ----
+            const interests = JSON.parse(localStorage.getItem('theJourney_transferInterests') || 'null');
+            const offerCount = interests ? interests.filter(i => i.status === 'interested' || i.status === 'countered').length : 0;
+            const offerEl = document.getElementById('dashTransferOffers');
+            if (offerEl) offerEl.textContent = offerCount;
+
+            const trendEl = document.getElementById('transferTrend');
+            if (trendEl) {
+                const prev = parseInt(sessionStorage.getItem('prevTransferOffers') || '0');
+                if (offerCount > prev) {
+                    trendEl.innerHTML = '<i class="fas fa-arrow-up trend-up"></i>';
+                } else if (offerCount < prev) {
+                    trendEl.innerHTML = '<i class="fas fa-arrow-down trend-down"></i>';
+                } else {
+                    trendEl.innerHTML = '<i class="fas fa-minus trend-stable"></i>';
+                }
+                sessionStorage.setItem('prevTransferOffers', offerCount);
+            }
+
+            // ---- OBJECTIVES ----
+            const goalsTotal = player.goalsScored || 0;
+            const assistsTotal = player.assists || 0;
+            const avgRatingCareer = player.careerRatingCount > 0 ? (player.careerRatingTotal / player.careerRatingCount) : 0;
+
+            const objectives = [
+                { label: 'Score in 3 consecutive matches', current: Math.min(3, goalsTotal), target: 3, achieved: goalsTotal >= 3 },
+                { label: 'Provide 5 assists this season', current: Math.min(5, assistsTotal), target: 5, achieved: assistsTotal >= 5 },
+                { label: 'Maintain rating above 7.0', current: Math.round(avgRatingCareer * 10) / 10 || 0, target: 7.0, achieved: avgRatingCareer >= 7.0 }
+            ];
+
+            const objContainer = document.getElementById('objectivesContainer');
+            if (objContainer) {
+                let html = '';
+                objectives.forEach(obj => {
+                    const pct = Math.min(100, (obj.current / obj.target) * 100);
+                    const status = obj.achieved ? '✓' : '○';
+                    const statusColor = obj.achieved ? 'var(--green-primary)' : 'var(--text-muted)';
+                    html += `
+                        <div class="obj-item">
+                            <span class="obj-status" style="color:${statusColor};">${status}</span>
+                            <span class="obj-text"><strong>${obj.current}</strong> / ${obj.target} · ${obj.label}</span>
+                            <div class="obj-progress"><div class="obj-fill" style="width:${pct}%;"></div></div>
+                        </div>
+                    `;
+                });
+                objContainer.innerHTML = html;
+            }
+
+            // ---- SPONSORS ----
+            const sponsorCount = (player.sponsors || []).length;
+            const spEl = document.getElementById('sponsorCount');
+            if (spEl) spEl.textContent = sponsorCount;
+
+            // ---- EQUIPMENT ----
+            const equipEl = document.getElementById('equipLabel');
+            if (equipEl) {
+                const equip = player.equipment || 'Standard Kit';
+                equipEl.textContent = equip.length > 15 ? equip.substring(0, 12) + '…' : equip;
+            }
+
+            // ---- CAREER PROGRESS ----
+            const progEl = document.getElementById('careerProgress');
+            if (progEl) {
+                const week = player.currentMatchWeek || 1;
+                progEl.textContent = 'S' + season + ' · W' + week;
+            }
+
+            // ---- CALENDAR ----
+            const calContainer = document.getElementById('calendarMini');
+            if (calContainer) {
+                const week = player.currentMatchWeek || 1;
+                const opponent = player.nextOpponent || 'TBD';
+                const date = new Date();
+                date.setDate(date.getDate() + (7 - date.getDay()) + (week * 7));
+                const dateStr = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+                calContainer.innerHTML = `
+                    <div class="cal-item"><span class="cal-date">${dateStr}</span><span class="cal-event">vs ${opponent}</span></div>
+                    <div class="cal-item"><span class="cal-date">—</span><span class="cal-event">Next fixture TBC</span></div>
+                `;
+            }
+
+            // ---- TOP SCORERS ----
+            const tsContainer = document.getElementById('topScorersMini');
+            if (tsContainer) {
+                const leagueData = player.leagueData;
+                if (leagueData) {
+                    const leagueKeys = Object.keys(leagueData);
+                    if (leagueKeys.length > 0 && leagueData[leagueKeys[0]]?.topScorers) {
+                        const scorers = leagueData[leagueKeys[0]].topScorers;
+                        const sorted = Object.keys(scorers).map(k => ({ name: k, goals: scorers[k] }))
+                            .sort((a, b) => b.goals - a.goals).slice(0, 3);
+                        let html = '';
+                        sorted.forEach(s => {
+                            html += `<div class="scorer-row"><span class="scorer-name">${s.name}</span><span class="scorer-goals">${s.goals}</span></div>`;
+                        });
+                        if (html === '') html = '<div class="scorer-row"><span class="scorer-name">No data</span><span class="scorer-goals">0</span></div>';
+                        tsContainer.innerHTML = html;
+                    } else {
+                        tsContainer.innerHTML = '<div class="scorer-row"><span class="scorer-name">No league data</span><span class="scorer-goals">—</span></div>';
+                    }
+                }
+            }
+
+            // ---- TEAM CHEMISTRY ----
+            const chemEl = document.getElementById('chemValue');
+            const chemLabel = document.getElementById('chemLabel');
+            if (chemEl && chemLabel) {
+                const moraleAvg = player.morale || 70;
+                const chem = Math.min(99, Math.round(70 + (moraleAvg - 50) * 0.5));
+                chemEl.textContent = chem;
+                let chemText = 'Strong';
+                let chemColor = '#2ecc71';
+                if (chem < 65) { chemText = 'Needs work'; chemColor = '#e74c3c'; }
+                else if (chem < 80) { chemText = 'Good'; chemColor = '#f1c40f'; }
+                chemLabel.textContent = chemText;
+                chemLabel.style.color = chemColor;
+            }
+
+            // ---- MEDIA FEED ----
+            const mediaContainer = document.getElementById('mediaFeedMini');
+            if (mediaContainer) {
+                const media = player.mediaMentions || [];
+                if (media.length > 0) {
+                    const latest = media.slice(0, 2);
+                    let html = '';
+                    latest.forEach(m => {
+                        const headline = m.headline || m.title || 'Update';
+                        html += `<div class="news-item"><i class="fas fa-circle"></i> ${headline.substring(0, 40)}${headline.length > 40 ? '…' : ''}</div>`;
+                    });
+                    mediaContainer.innerHTML = html;
+                } else {
+                    mediaContainer.innerHTML = '<div class="news-item"><i class="fas fa-circle"></i> No media yet</div>';
+                }
+            }
+
+            // ---- FACE ----
+            const faceContainer = document.getElementById('dashFaceContainer');
+            const savedFace = localStorage.getItem('theJourney_playerFace') || player.faceImage || '';
+            if (savedFace && faceContainer) {
+                faceContainer.innerHTML = '<img src="' + savedFace + '" alt="Player" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+            }
+
+            // ---- SAVE TREND DATA ----
+            attrKeys.forEach(k => {
+                const val = Math.round(abilities[k] || 60);
+                sessionStorage.setItem('prev_attr_' + k, val);
+            });
+        }
+
+        // --- TOAST ---
+        function showToast(message, type) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = 'toast toast-' + (type || '');
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
+        }
+
+        // --- INIT ---
+        renderDashboard();
+
+        setTimeout(() => {
+            showToast('Welcome back, ' + (player.name || 'Player') + '!', 'success');
+        }, 500);
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'theJourney_playerData') {
+                const newData = JSON.parse(e.newValue);
+                if (newData) {
+                    Object.assign(player, newData);
+                    renderDashboard();
+                }
+            }
+        });
+
+        console.log('FC26 Dashboard loaded — ' + player.name + ' | OVR ' + Math.round(player.ovr || 60));
+        console.log('💰 Bank Balance: £' + (player.bankBalance || 500));
+    })();
+</script>
+
+</body>
+</html>
