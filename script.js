@@ -96,15 +96,74 @@ document.addEventListener('DOMContentLoaded', () => {
         if (ovrBar) ovrBar.style.width = (baseOVR / 99 * 100) + '%';
     });
 
-    // --- Generate attributes based on position and OVR (PROPERLY SCALED) ---
-    function generateAttributes(position, ovr) {
+    // --- COMPUTE OVR FROM ATTRIBUTES (EXACTLY SAME AS CAREER.JS) ---
+    function computeOVRFromAttributes(attrs, position) {
+        const pos = (position || '').toUpperCase();
+        
+        let weights = {
+            acceleration: 0.08, sprintSpeed: 0.08, stamina: 0.08,
+            finishing: 0.08, passing: 0.08, dribbling: 0.08,
+            ballControl: 0.08, composure: 0.08, strength: 0.08,
+            vision: 0.08, doubleTouch: 0.06, agility: 0.06,
+            injuryResistance: 0.02
+        };
+        
+        if (['ST', 'CF'].includes(pos)) {
+            weights.finishing = 0.18;
+            weights.dribbling = 0.10;
+            weights.acceleration = 0.10;
+            weights.sprintSpeed = 0.10;
+            weights.composure = 0.10;
+        } else if (['LW', 'RW'].includes(pos)) {
+            weights.dribbling = 0.15;
+            weights.acceleration = 0.12;
+            weights.sprintSpeed = 0.12;
+            weights.finishing = 0.10;
+            weights.passing = 0.10;
+        } else if (['CAM', 'CM'].includes(pos)) {
+            weights.passing = 0.15;
+            weights.vision = 0.12;
+            weights.dribbling = 0.10;
+            weights.ballControl = 0.10;
+            weights.composure = 0.10;
+        } else if (['CDM'].includes(pos)) {
+            weights.stamina = 0.12;
+            weights.strength = 0.12;
+            weights.vision = 0.10;
+            weights.passing = 0.10;
+            weights.ballControl = 0.08;
+        } else if (['CB', 'LB', 'RB'].includes(pos)) {
+            weights.strength = 0.14;
+            weights.stamina = 0.10;
+            weights.acceleration = 0.10;
+            weights.sprintSpeed = 0.10;
+            weights.ballControl = 0.08;
+        } else if (['GK'].includes(pos)) {
+            weights = {
+                acceleration: 0.10, sprintSpeed: 0.05, stamina: 0.10,
+                finishing: 0.01, passing: 0.10, dribbling: 0.05,
+                ballControl: 0.10, composure: 0.15, strength: 0.10,
+                vision: 0.08, doubleTouch: 0.01, agility: 0.10,
+                injuryResistance: 0.05
+            };
+        }
+        
+        let total = 0;
+        let totalWeight = 0;
+        for (const [key, weight] of Object.entries(weights)) {
+            const val = attrs[key] || 40;
+            total += val * weight;
+            totalWeight += weight;
+        }
+        
+        return Math.max(30, Math.min(99, Math.round(total / totalWeight)));
+    }
+
+    // --- Generate attributes and adjust to hit target OVR ---
+    function generateAttributes(position, targetOVR) {
         const pos = position.toUpperCase();
+        const base = targetOVR - 2; // start slightly below
         
-        // Base attributes scaled to OVR value
-        // For OVR 65, attributes should average around 65
-        const base = ovr - 2; // Slightly below OVR to allow growth
-        
-        // Position-specific adjustments (adds to base)
         const adjustments = {
             'ST': { acceleration: 4, sprintSpeed: 3, stamina: 2, finishing: 8, passing: -2, dribbling: 4, ballControl: 3, composure: 5, strength: 4, vision: -1, doubleTouch: 2, agility: 3 },
             'CF': { acceleration: 3, sprintSpeed: 2, stamina: 2, finishing: 6, passing: 0, dribbling: 6, ballControl: 5, composure: 5, strength: 2, vision: 1, doubleTouch: 4, agility: 4 },
@@ -121,19 +180,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const adj = adjustments[pos] || { acceleration: 2, sprintSpeed: 2, stamina: 3, finishing: 2, passing: 2, dribbling: 2, ballControl: 2, composure: 2, strength: 2, vision: 2, doubleTouch: 1, agility: 2 };
 
-        const attrs = {};
+        let attrs = {};
         const keys = ['acceleration', 'sprintSpeed', 'stamina', 'finishing', 'passing', 'dribbling', 'ballControl', 'composure', 'strength', 'vision', 'doubleTouch', 'agility'];
         keys.forEach(key => {
-            // Base + adjustment + small randomness
-            let val = base + (adj[key] || 0) + Math.floor(Math.random() * 4) - 2;
-            // Ensure within reasonable range for OVR 65
+            let val = base + (adj[key] || 0) + Math.floor(Math.random() * 6) - 3;
             val = Math.max(45, Math.min(85, Math.round(val)));
             attrs[key] = val;
         });
-
-        // Ensure stamina is decent
         attrs.stamina = Math.max(50, attrs.stamina);
         attrs.injuryResistance = 45 + Math.floor(Math.random() * 10);
+
+        // --- Adjust attributes until OVR matches target ---
+        let currentOVR = computeOVRFromAttributes(attrs, position);
+        let attempts = 0;
+        const maxAttempts = 200;
+        while (currentOVR !== targetOVR && attempts < maxAttempts) {
+            attempts++;
+            // Pick a random attribute and adjust by ±1
+            const key = keys[Math.floor(Math.random() * keys.length)];
+            const direction = currentOVR < targetOVR ? 1 : -1;
+            const newVal = Math.max(40, Math.min(99, attrs[key] + direction));
+            if (newVal !== attrs[key]) {
+                attrs[key] = newVal;
+                currentOVR = computeOVRFromAttributes(attrs, position);
+            }
+        }
+
+        // If still not exact, force by adding to a key that has room
+        if (currentOVR !== targetOVR) {
+            const diff = targetOVR - currentOVR;
+            const keysToBoost = ['finishing', 'passing', 'dribbling', 'ballControl', 'composure', 'vision', 'strength', 'stamina'];
+            for (let i = 0; i < Math.abs(diff) * 3 && currentOVR !== targetOVR; i++) {
+                const key = keysToBoost[i % keysToBoost.length];
+                const dir = diff > 0 ? 1 : -1;
+                const newVal = Math.max(40, Math.min(99, attrs[key] + dir));
+                if (newVal !== attrs[key]) {
+                    attrs[key] = newVal;
+                    currentOVR = computeOVRFromAttributes(attrs, position);
+                }
+            }
+        }
+
+        // Final fallback: set OVR manually if still off
+        if (currentOVR !== targetOVR) {
+            // Just increase the most important attribute for position
+            const primary = {
+                'ST': 'finishing', 'CF': 'finishing', 'LW': 'dribbling', 'RW': 'dribbling',
+                'CAM': 'passing', 'CM': 'passing', 'CDM': 'stamina',
+                'LB': 'defending', 'RB': 'defending', 'CB': 'strength', 'GK': 'composure'
+            }[pos] || 'ballControl';
+            while (computeOVRFromAttributes(attrs, position) < targetOVR && attrs[primary] < 99) {
+                attrs[primary] += 1;
+            }
+            while (computeOVRFromAttributes(attrs, position) > targetOVR && attrs[primary] > 40) {
+                attrs[primary] -= 1;
+            }
+        }
 
         return attrs;
     }
@@ -150,11 +252,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // OVR defaults to 65 if not set or invalid
             let ovr = parseInt(ovrValue?.textContent);
             if (isNaN(ovr) || ovr < 40) ovr = 65;
 
-            // Generate attributes based on position and OVR
+            // Generate attributes that will produce exactly this OVR
             const attributes = generateAttributes(playerPos, ovr);
 
             const playerData = {
